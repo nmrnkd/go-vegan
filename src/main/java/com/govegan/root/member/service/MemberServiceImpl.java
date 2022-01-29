@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.govegan.root.common.session.MemberSessionName;
@@ -19,7 +20,12 @@ import com.govegan.root.mybatis.member.MemberMapper;
 @Service
 public class MemberServiceImpl implements MemberService{
 	@Autowired MemberMapper mapper;
+	BCryptPasswordEncoder encoder;
 	MemberSessionName msn;
+	
+	public MemberServiceImpl() {
+		encoder = new BCryptPasswordEncoder();
+	}
 	public int userCheck(String id, String pwd) {
 		MemberDTO dto = new MemberDTO();
 		dto = mapper.userCheck(id);
@@ -55,7 +61,7 @@ public class MemberServiceImpl implements MemberService{
 		map.put("id", id);
 		mapper.keepLogin(map);
 
-	}
+	}	
 	public void logout(Cookie loginCookie, HttpSession session, HttpServletResponse response) {
 		if(loginCookie!=null) {	
 			loginCookie.setMaxAge(0);
@@ -65,6 +71,20 @@ public class MemberServiceImpl implements MemberService{
 					(String)session.getAttribute(msn.LOGIN));	
 		}
 		session.invalidate();
+	}
+	public int chkId(String id) {
+		System.out.println(mapper.chkId(id));
+		return mapper.chkId(id);
+	}
+	public int register(MemberDTO dto) {
+		String securePw = encoder.encode(dto.getPwd());
+		dto.setPwd(securePw);
+		try {
+			return mapper.register(dto);
+		}catch(Exception e){
+			e.printStackTrace();
+			return 0;
+		}	
 	}
 
 }

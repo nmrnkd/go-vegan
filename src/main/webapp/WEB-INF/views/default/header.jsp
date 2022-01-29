@@ -46,7 +46,7 @@ nav ul li a:hover{
 			</c:choose>			
 			
 			
-				<li><a href ="${contextPath }/member/register">JOIN</a></li>
+				<li><a href ="${contextPath }/member/register_form">JOIN</a></li>
 			</ul>
 		</nav>
 	</nav>

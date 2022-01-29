@@ -7,6 +7,7 @@ public class MemberDTO {
 	private String id;
 	private String pwd;
 	private String name;
+	private String email;
 	private String sessionId;
 	private Date limitDate;
 	
@@ -33,6 +34,12 @@ public class MemberDTO {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	public String getSessionId() {
 		return sessionId;

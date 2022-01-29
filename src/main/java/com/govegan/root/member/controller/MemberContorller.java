@@ -11,10 +11,13 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.govegan.root.common.session.MemberSessionName;
+import com.govegan.root.member.dto.MemberDTO;
 import com.govegan.root.member.service.MemberService;
 
 @Controller
@@ -42,7 +45,7 @@ public class MemberContorller implements com.govegan.root.common.session.MemberS
 			model.addAttribute("msg", "THERE IS NO REGISTERED ID");
 		}
 		model.addAttribute("url","/root/member/login");
-		return "/member/login";	
+		return "/member/msg";	
 	}
 	@GetMapping("/successLogin")
 	public String successLogin(@RequestParam String id,
@@ -65,4 +68,28 @@ public class MemberContorller implements com.govegan.root.common.session.MemberS
 		response.addHeader(null, null);
 		return "redirect:/index";
 	}
+	@GetMapping("register_form")
+	public String register() {
+		return "/member/register_form";
+	}	
+	@ResponseBody
+	@RequestMapping(value="chkId", method = RequestMethod.GET,
+					produces = "application/json;charset=utf-8")
+	public int chkId(@RequestParam String id) {
+		return ms.chkId(id);
+	}
+	@PostMapping("register")
+	public String register(MemberDTO dto, Model model) {
+		System.out.println(dto.getName());
+		System.out.println(dto.getId());
+
+		int result = ms.register(dto);
+		if(result==1) {
+			return "redirect:/member/login";
+		}else {
+			model.addAttribute("msg", "회원가입 실패");
+			return "redirect:/member/register_form";
+		}
+	}		
 }
+	
